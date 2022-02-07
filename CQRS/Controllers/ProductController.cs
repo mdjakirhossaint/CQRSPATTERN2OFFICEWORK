@@ -2,6 +2,7 @@
 using CQRS.BLL.Interfaces.Product;
 using CQRS.BLL.Models.Product.CUDHandellerModel;
 using CQRS.BLL.Models.Product.QueryHandellerModel;
+using CQRS.Database;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -14,10 +15,12 @@ namespace CQRS.Controllers
     {
         private IProductHandeller productHandeller;
         private IProductQueryHandeller productQueryHandeller;
-        public ProductController(IProductHandeller _productHandeller, IProductQueryHandeller _productQueryHandeller)
+        private CQRSContext db;
+        public ProductController(IProductHandeller _productHandeller, IProductQueryHandeller _productQueryHandeller, CQRSContext _db)
         {
             productHandeller = _productHandeller;
             productQueryHandeller = _productQueryHandeller;
+            db = _db;
         }
         public IActionResult Index()
         {
@@ -32,8 +35,20 @@ namespace CQRS.Controllers
         [HttpPost]
         public IActionResult AddProduct(CreateProductHandellerModel vmodel)
         {
-            productHandeller.SaveProduct(vmodel);
-            return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                var checkUniqueModel = db.Products.Where(x=>x.Model==vmodel.Model);
+                if (checkUniqueModel.Count() > 0)
+                {
+                    TempData["message"] = "This Model Number Already Exists!";
+                }
+                else {
+                    productHandeller.SaveProduct(vmodel);
+                    return RedirectToAction("Index");
+                }
+                
+            }
+            return View();
         }
         [HttpGet]
         public IActionResult EditProduct(int ID)
@@ -49,8 +64,23 @@ namespace CQRS.Controllers
         [HttpPost]
         public IActionResult EditProduct(UpdateProductHandellerModel vmodel)
         {
-            productHandeller.UpdateProduct(vmodel);
-            return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                var checkUniqueModel = db.Products.Where(x=>x.Model==vmodel.Model);
+
+                if (checkUniqueModel.Count() > 0)
+                {
+                    TempData["EditMessage"] = "The Model Is Already Exists in Database";
+                }
+
+                else
+                {
+                    productHandeller.UpdateProduct(vmodel);
+                    return RedirectToAction("Index");
+                }
+            }
+            var ID = vmodel.ID;
+            return RedirectToAction("EditProduct",ID);
         }
         [HttpGet]
         public IActionResult DetailProduct(int ID)

@@ -4,14 +4,16 @@ using CQRS.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CQRS.Database.Migrations
 {
     [DbContext(typeof(CQRSContext))]
-    partial class AppContextModelSnapshot : ModelSnapshot
+    [Migration("20220207101940_ProductTableUpdate")]
+    partial class ProductTableUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
