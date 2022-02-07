@@ -1,0 +1,75 @@
+﻿@model IEnumerable<CQRS.Database.Entities.TblProduct>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<div class="row">
+    <div class="col-lg-4">
+        <a class=" btn btn-info" asp-action="AddProduct">Add Product</a>
+    </div>
+    <div class="col-lg-8">
+        <h1>Product List</h1>
+    </div>
+</div>
+<div class="table">
+
+    <table class="table">
+        <thead>
+            <tr>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Model)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.Name)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Model)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Description)
+    </td>
+    <td class="btn-group">
+        @Html.ActionLink("Edit", "EditProduct", new { ID = item.ID },new { @class="btn btn-primary"})
+        @Html.ActionLink("Detail", "DetailProduct", new { ID = item.ID },new { @class="btn btn-dark"})
+        <a asp-route-id="@item.ID" data-id="@item.ID" class="btn btn-danger addressDeleteBtn">Delete</a>
+    </td>
+</tr>}
+        </tbody>
+    </table>
+</div>
+<script>
+    $(".addressDeleteBtn").click(function () {
+      debugger;
+      var result = confirm("Are you sure delete this");
+      if (result == true) {
+
+          $.ajax({
+              url: "@Url.Action("DeleteProduct", "Product")",
+              method: "post",
+              data: {
+
+                  ID: $(this).attr("data-id")
+              }
+          }).done(function (response) {
+              debugger;
+               window.location.href = "@Url.Action("Index", "Product")";
+          });
+      }
+  });
+</script>

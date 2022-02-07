@@ -1,0 +1,57 @@
+﻿@model CQRS.BLL.Models.Product.QueryHandellerModel.ProductDetailQueryHandellerModel
+
+@{
+    ViewData["Title"] = "DetailProduct";
+}
+
+<h1>Details of Product</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Model)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Model)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+    </dl>
+</div>
+<div class="btn-group">
+    @Html.ActionLink("Edit", "EditProduct", new { ID = Model.ID },new { @class="btn btn-primary"}) 
+    @Html.ActionLink("Delete", "DeleteProduct", new { ID = Model.ID },new { @class= "btn btn-danger productDeleteBtn" }) 
+    <a class="btn btn-info" asp-action="Index">Back to List</a>
+</div>
+<script>
+    $(".productDeleteBtn").click(function () {
+      debugger;
+      var result = confirm("Are you sure delete this");
+      if (result == true) {
+
+          $.ajax({
+              url: "@Url.Action("DeleteProduct", "Product")",
+              method: "post",
+              data: {
+
+                  ID: $(this).attr("data-id")
+              }
+          }).done(function (response) {
+              debugger;
+               window.location.href = "@Url.Action("Index", "Product")";
+          });
+      }
+  });
+</script>

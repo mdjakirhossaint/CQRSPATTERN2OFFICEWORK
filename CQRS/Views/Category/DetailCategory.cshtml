@@ -1,0 +1,44 @@
+﻿@model CQRS.BLL.Models.Category.QueryHandellerModel.DetailCategoryQueryHandellerModel
+
+@{
+    ViewData["Title"] = "DetailCategory";
+}
+
+<h1>Detail of Category</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            <label>Category Name</label>
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CategoryName)
+        </dd>
+    </dl>
+</div>
+<div class="btn-group">
+    @Html.ActionLink("Edit", "EditCategory", new { ID = Model.ID }, new { @class = "btn btn-primary" })
+    <a asp-route-id="@Model.ID" data-id="@Model.ID" class="btn btn-danger DetailcategoryDeleteBtn">Delete</a>
+    <a class="btn btn-info" asp-action="Index">Back to List</a>
+</div>
+<script>
+    $(".DetailcategoryDeleteBtn").click(function () {
+      debugger;
+      var result = confirm("Are you sure delete this");
+      if (result == true) {
+
+          $.ajax({
+              url: "@Url.Action("DeleteCategory", "Category")",
+              method: "post",
+              data: {
+
+                  ID: $(this).attr("data-id")
+              }
+          }).done(function (response) {
+              debugger;
+               window.location.href = "@Url.Action("Index", "Category")";
+          });
+      }
+  });
+</script>
